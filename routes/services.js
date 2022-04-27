@@ -6,7 +6,7 @@ router.get('/', async (req, res) => {
     res.json('Get all services');
 });
 
-//Get all services
+//Get all services NTH
 router.get('/user/:id', async (req, res) => {
     res.json('Get all services by user');
 });
