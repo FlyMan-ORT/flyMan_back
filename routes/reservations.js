@@ -15,3 +15,5 @@ router.post('/reservation', async (req, res) => { });
 
 //Update maintenance reservation (WEB & APP)
 router.patch('/reservation/:id', async (req, res) => { });
+
+module.exports = router;
