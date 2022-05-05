@@ -8,7 +8,14 @@ router.get('/', function (req, res, next) {
 
 //Users login (APP)
 router.post('/login', async (req, res) => {
-  res.json('Login');
+  const { email, password } = req.body;
+  console.log('llegamos');
+
+  if (!email || !password) return res.status(404).json();
+
+  console.log(email, password);
+  const accessToken = email;
+  res.json({ accessToken });
 });
 
 //Users register (WEB)
