@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const data = require('../data/cars')
+const cars = require('../data/cars')
 
 //Get cars
 router.get('/', async (req, res) => {
-    let cars = await data.getAllCars();
+    let allCars = await cars.getAllCars();
 
-    res.json(cars);
+    res.json(allCars);
 });
 
 //Open car
