@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-
-const SECRET = 'SECRET_KEY';
+const users = require('../data/users')
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
-  res.json('Get all users');
+router.get('/', async (req, res) => {
+  let allUsers = await users.getAllUsers();
+  res.json(allUsers);
 });
 
 //Users login (APP)
@@ -30,7 +30,12 @@ router.post('/login', async (req, res) => {
 
 //Users register (WEB)
 router.post('/register', async (req, res) => {
-  res.json('Register');
+  //res.json('Register a new user');
+  try {
+    res.send(await users.addUser(req.body));
+  } catch (error) {
+    res.send(error.message);
+  } 
 });
 
 //Users delete

@@ -1,13 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const cars = require('../data/cars')
 
 //Get cars
 router.get('/', async (req, res) => {
-    res.json('Get cars');
+    let allCars = await cars.getAllCars();
+
+    res.json(allCars);
 });
 
 //Open car
 router.post('/open', async (req, res) => {
+    
     res.json('Open car');
 });
 
