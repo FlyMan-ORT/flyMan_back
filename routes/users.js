@@ -24,8 +24,6 @@ router.post('/login', async (req, res) => {
     const user = await users.getUserByEmail(email);
     if (!user) return res.status(404).json();
 
-    console.log(user)
-
     // Validate password
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(404).json();
@@ -35,7 +33,6 @@ router.post('/login', async (req, res) => {
 
     res.status(200).json({ token });
   } catch (error) {
-    console.log(error);
     res.status(500).json();
   }
 });
