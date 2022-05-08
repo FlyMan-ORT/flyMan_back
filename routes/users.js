@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const users = require('../data/users')
+const bcrypt = require('bcrypt');
+const users = require('../data/users');
+
+const SALT_ROUNDS = 10;
 
 /* GET users listing. */
 router.get('/', async (req, res) => {
@@ -17,10 +20,9 @@ router.post('/login', async (req, res) => {
 
     // Clean fields
     email = email.toLowerCase().trim();
-    password = password.trim();
 
     // replace with SECRET
-    const token = jwt.sign({ id: email }, process.env.SECRET_KEY);
+    const token = jwt.sign({ _id: email }, process.env.SECRET_KEY);
 
     res.status(200).json({ token });
   } catch (error) {
@@ -30,12 +32,25 @@ router.post('/login', async (req, res) => {
 
 //Users register (WEB)
 router.post('/register', async (req, res) => {
-  //res.json('Register a new user');
   try {
-    res.send(await users.addUser(req.body));
+    let { email, password } = req.body;
+    if (!email || !password) return res.status(400).json();
+
+    // Clean fields
+    email = email.toLowerCase().trim();
+
+    // Hash password
+    password = await bcrypt.hash(password, SALT_ROUNDS);
+
+    let saved = await users.addUser({ email, password });
+    if (!saved.insertedId) return res.status(500).json({ error: 'Error' });
+
+    const token = jwt.sign({ _id: saved.insertedId }, process.env.SECRET);
+
+    res.status(200).json(token);
   } catch (error) {
-    res.send(error.message);
-  } 
+    res.status(500).send(error.message);
+  }
 });
 
 //Users delete
