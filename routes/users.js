@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+
+const SECRET = 'SECRET_KEY';
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -8,14 +11,22 @@ router.get('/', function (req, res, next) {
 
 //Users login (APP)
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  console.log('llegamos');
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json();
 
-  if (!email || !password) return res.status(404).json();
+    // Clean fields
+    email = email.toLowerCase().trim();
+    password = password.trim();
 
-  console.log(email, password);
-  const accessToken = email;
-  res.json({ accessToken });
+    // replace with SECRET
+    const token = jwt.sign({ id: email }, process.env.SECRET_KEY);
+    console.log(token);
+
+    res.status(200).json({ token });
+  } catch (error) {
+    res.status(500).json();
+  }
 });
 
 //Users register (WEB)
