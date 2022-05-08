@@ -12,13 +12,13 @@ async function getAllUsers() {
     return users;
 }
 
-async function addUser(user){
+async function addUser(user) {
     const connectiondb = await conn.getConnection();
     const res = await connectiondb
-                .db(DATABASE)
-                .collection(USERS_COLLECTION)
-                .insertOne(user);
+        .db(DATABASE)
+        .collection(USERS_COLLECTION)
+        .insertOne(user);
     return res;
 }
 
-module.exports = {getAllUsers, addUser};
+module.exports = { getAllUsers, addUser };
