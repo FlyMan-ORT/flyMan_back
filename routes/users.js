@@ -21,7 +21,6 @@ router.post('/login', async (req, res) => {
 
     // replace with SECRET
     const token = jwt.sign({ id: email }, process.env.SECRET_KEY);
-    console.log(token);
 
     res.status(200).json({ token });
   } catch (error) {
