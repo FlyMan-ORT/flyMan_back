@@ -1,9 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
+/////////////////////////////////// FILE SYSTEM ////////////////////////////////////
+//lee de file system por el momento hasta que nos habilite la empresa
+const fs = require('fs');
+const PATH_RESERVATIONS = './data/mockUpReservations.json'
+/////////////////////////////////// FILE SYSTEM ////////////////////////////////////
+
 //All reservations for web (WEB)
 router.get('/', async (req, res) => {
-    res.json('All reservations');
+    console.log('hola')
+    const response = fs.readFileSync(PATH_RESERVATIONS,"utf-8", ()=> {});       
+
+    res.json(JSON.parse(response));
 });
 
 //All maintenance (WEB)
