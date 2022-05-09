@@ -41,8 +41,8 @@ router.post('/login', async (req, res) => {
 //Users register (WEB)
 router.post('/register', async (req, res) => {
   try {
-    let { email, password } = req.body;
-    if (!email || !password) return res.status(400).json();
+    let { name, email, password } = req.body;
+    if (!name || !email || !password) return res.status(400).json();
 
     // Clean fields
     email = email.toLowerCase().trim();
@@ -50,7 +50,7 @@ router.post('/register', async (req, res) => {
     // Hash password
     password = await bcrypt.hash(password, SALT_ROUNDS);
 
-    let saved = await users.addUser({ email, password });
+    let saved = await users.addUser({ name, email, password });
     if (!saved.insertedId) return res.status(500).json({ error: 'Error' });
 
     const token = jwt.sign({ _id: saved.insertedId }, process.env.SECRET);
