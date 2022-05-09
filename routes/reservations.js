@@ -9,7 +9,6 @@ const PATH_RESERVATIONS = './data/mockUpReservations.json'
 
 //All reservations for web (WEB)
 router.get('/', async (req, res) => {
-    console.log('hola')
     const response = fs.readFileSync(PATH_RESERVATIONS,"utf-8", ()=> {});       
 
     res.json(JSON.parse(response));
