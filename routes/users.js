@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const users = require('../data/users')
+const bcrypt = require('bcrypt');
+const users = require('../data/users');
 
 /* GET users listing. */
 router.get('/', async (req, res) => {
@@ -19,8 +20,16 @@ router.post('/login', async (req, res) => {
     email = email.toLowerCase().trim();
     password = password.trim();
 
+    // Get user
+    const user = await users.getUserByEmail(email);
+    if (!user) return res.status(404).json();
+
+    // Validate password
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(404).json();
+
     // replace with SECRET
-    const token = jwt.sign({ id: email }, process.env.SECRET_KEY);
+    const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY);
 
     res.status(200).json({ token });
   } catch (error) {
@@ -35,7 +44,7 @@ router.post('/register', async (req, res) => {
     res.send(await users.addUser(req.body));
   } catch (error) {
     res.send(error.message);
-  } 
+  }
 });
 
 //Users delete
