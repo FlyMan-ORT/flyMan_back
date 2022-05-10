@@ -9,7 +9,7 @@
         "fuelStart": 0.0,
         "endFuel": null,
         "car": {
-            "plate": "RT019RT",
+            "plate": "AA666BB",
             "fuelLevel": 0.0,
             "odometer": 17945.0,
             "parkingName": "Parking Geronimo Roundtrip",
@@ -849,7 +849,7 @@
         "fuelStart": 0.0,
         "endFuel": null,
         "car": {
-            "plate": "SS123SS",
+            "plate": "RT001RT",
             "fuelLevel": 0.0,
             "odometer": 40716.0,
             "parkingName": "Parking Geronimo Roundtrip",
@@ -1017,7 +1017,7 @@
         "fuelStart": 41.0,
         "endFuel": null,
         "car": {
-            "plate": "RT019RT",
+            "plate": "culo",
             "fuelLevel": 0.0,
             "odometer": 40578.0,
             "parkingName": "Parking Geronimo Roundtrip",
@@ -1038,7 +1038,7 @@
         "fuelStart": 34.9,
         "endFuel": 34.9,
         "car": {
-            "plate": "SS123SS",
+            "plate": "culo",
             "fuelLevel": 34.9,
             "odometer": 3088.0,
             "parkingName": "Parking Geronimo Roundtrip",
