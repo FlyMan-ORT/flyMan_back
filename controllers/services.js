@@ -5,6 +5,8 @@ const createService = async (req, res) => {
     try {
         const { plate, reservationId } = req.body;
         if (!plate || !reservationId) return res.status(400).json();
+        const serviceExistant = await ServicesDB.getService(plate, reservationId);
+        if (serviceExistant) return res.status(400).json();
 
         const service = {
             plate: plate,
