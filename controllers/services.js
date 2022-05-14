@@ -1,4 +1,4 @@
-var moment = require('moment-timezone');
+var moment = require('moment');
 const ServicesDB = require('../data/services');
 
 const createService = async (req, res) => {
@@ -10,7 +10,7 @@ const createService = async (req, res) => {
             plate: plate,
             reservationId: reservationId,
             userEmail: '',
-            startDate: moment.utc().tz("America/Argentina/Buenos_Aires").format(),
+            startDate: moment().format(),
         }
 
         const saved = await ServicesDB.saveService(service);
@@ -77,11 +77,11 @@ const updateService = async (req, res) => {
         const service = await getServiceById(id);
         if (!service) return res.status(404).json();
 
-        const endDate = moment.utc().tz("America/Argentina/Buenos_Aires").format();
+        const endDate = moment().format();
         const updated = await ServicesDB.updateService(id, tasks, endDate);;
         if (!updated || updated.modifiedCount === 0) return res.status(500).json();
 
-        res.status(200).json({ updated: updated.modifiedCount === 0 });
+        res.status(200).json({ updated: updated.modifiedCount > 0 });
     } catch (error) {
         res.status(500).json();
     }

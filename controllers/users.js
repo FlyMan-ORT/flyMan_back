@@ -1,7 +1,8 @@
-
+var moment = require('moment');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UsersDB = require('../data/users');
+
 
 const SALT_ROUNDS = 10;
 
@@ -32,11 +33,12 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        let { name, email, password } = req.body;
-        if (!name || !email || !password) return res.status(400).json();
+        let { name, email, password, phone } = req.body;
+        if (!name || !email || !password || !phone) return res.status(400).json();
 
         // Clean fields
         email = email.toLowerCase().trim();
+        phone = phone.trim();
 
         const user = await UsersDB.getUserByEmail(email);
         if (user) return res.status(400).json();
@@ -44,7 +46,7 @@ const register = async (req, res) => {
         // Hash password
         password = await bcrypt.hash(password, SALT_ROUNDS);
 
-        let saved = await UsersDB.addUser({ name, email, password });
+        let saved = await UsersDB.addUser({ name, email, password, phone });
         if (!saved.insertedId) return res.status(500).json({ error: 'Error' });
 
         const token = jwt.sign({ _id: saved.insertedId }, process.env.SECRET_KEY);
@@ -60,4 +62,42 @@ const getAllUsers = async (req, res) => {
     res.status(200).json(allUsers);
 }
 
-module.exports = { login, register, getAllUsers }
+const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, phone } = req.body;
+        if (!id || !name || !email || !phone) return res.status(400).json();
+
+        const user = await UsersDB.getUserById(id);
+        if (!user) return res.status(400).json();
+        
+        const updated = await UsersDB.updateUser(id, name, email, phone);
+        if (!updated || updated.modifiedCount === 0) return res.status(500).json();
+
+        res.status(200).json({ updated: updated.modifiedCount > 0 });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json();
+    }
+}
+
+const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) return res.status(400).json();
+
+        const user = await UsersDB.getUserById(id);
+        if (!user) return res.status(400).json();
+        
+        const deletedAt = moment().format();
+        const deleted = await UsersDB.deleteUser(id, deletedAt);
+        if (!deleted || deleted.modifiedCount === 0) return res.status(500).json();
+
+        res.status(200).json({ deleted: deleted.modifiedCount > 0 });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json();
+    }
+}
+
+module.exports = { login, register, getAllUsers, updateUser, deleteUser }

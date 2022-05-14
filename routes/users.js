@@ -11,14 +11,10 @@ router.post('/login', usersController.login);
 //Users register (WEB)
 router.post('/register', usersController.register);
 
-//Users delete
-router.delete('/:id', async (req, res) => {
-  res.json('Delete');
-});
-
 //Users update
-router.patch('/:id', async (req, res) => {
-  res.json('Update');
-});
+router.patch('/:id', usersController.updateUser);
+
+//Users delete (en vez de borrarlo, le crea un nuevo aributo con la fecha de baja del usuario)
+router.delete('/:id', usersController.deleteUser);
 
 module.exports = router;
