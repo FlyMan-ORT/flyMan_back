@@ -32,11 +32,12 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        let { name, email, password } = req.body;
-        if (!name || !email || !password) return res.status(400).json();
+        let { name, email, password, phone } = req.body;
+        if (!name || !email || !password || !phone) return res.status(400).json();
 
         // Clean fields
         email = email.toLowerCase().trim();
+        phone = phone.trim();
 
         const user = await UsersDB.getUserByEmail(email);
         if (user) return res.status(400).json();
@@ -44,7 +45,7 @@ const register = async (req, res) => {
         // Hash password
         password = await bcrypt.hash(password, SALT_ROUNDS);
 
-        let saved = await UsersDB.addUser({ name, email, password });
+        let saved = await UsersDB.addUser({ name, email, password, phone });
         if (!saved.insertedId) return res.status(500).json({ error: 'Error' });
 
         const token = jwt.sign({ _id: saved.insertedId }, process.env.SECRET_KEY);
