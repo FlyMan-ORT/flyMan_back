@@ -81,7 +81,7 @@ const updateService = async (req, res) => {
         const updated = await ServicesDB.updateService(id, tasks, endDate);;
         if (!updated || updated.modifiedCount === 0) return res.status(500).json();
 
-        res.status(200).json({ updated: updated.modifiedCount === 0 });
+        res.status(200).json({ updated: updated.modifiedCount > 0 });
     } catch (error) {
         res.status(500).json();
     }
