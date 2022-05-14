@@ -23,6 +23,23 @@ const createService = async (req, res) => {
     }
 }
 
+const getAllServices = async (req,res) => {
+    try {
+        const ended = req.query.ended;
+        let services = [];
+        if(ended === 'true') {
+            services = await ServicesDB.getEndedServices()
+        } else{
+            services = await ServicesDB.getAllServices()
+        }
+        
+        res.status(200).json(services) ;
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+       
+}
+
 const getService = async (req, res) => {
     try {
         const { plate, reservation } = req.params;
@@ -33,13 +50,19 @@ const getService = async (req, res) => {
 
         res.status(200).json({ service })
     } catch (error) {
-        console.log(error)
         res.status(500).json();
     }
 }
 
-const getServiceById = async (id) => {
-    return await ServicesDB.getServiceById(id);
+const getServiceById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const service = await ServicesDB.getServiceById(id)
+        res.status(200).json(service)
+    } catch (error) {
+        res.status(500).json();
+    }
+
 }
 
 const updateService = async (req, res) => {
@@ -61,4 +84,4 @@ const updateService = async (req, res) => {
     }
 }
 
-module.exports = { createService, getService, getServiceById, updateService }
+module.exports = { createService, getService, getServiceById, updateService, getAllServices }
