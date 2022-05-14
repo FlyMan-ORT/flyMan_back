@@ -57,12 +57,15 @@ const getService = async (req, res) => {
 const getServiceById = async (req, res) => {
     try {
         const { id } = req.params;
+        if (!id) return res.status(400).json();
+        
         const service = await ServicesDB.getServiceById(id)
+        if (!service) return res.status(404).json();
+        
         res.status(200).json(service)
     } catch (error) {
         res.status(500).json();
     }
-
 }
 
 const updateService = async (req, res) => {
