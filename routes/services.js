@@ -3,11 +3,12 @@ const router = express.Router();
 const ServicesController = require('../controllers/services');
 
 //Get all services
-router.get('/', async (req, res) => {
-    res.json('Get all services');
-});
+router.get('/', ServicesController.getAllServices);
 
 router.get('/plate/:plate/reservation/:reservation', ServicesController.getService);
+
+//Get service by ID
+router.get('/:id', ServicesController.getServiceById );
 
 //Create services
 router.post('/', ServicesController.createService);
