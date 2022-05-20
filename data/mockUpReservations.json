@@ -126,6 +126,29 @@
         "createdAt": "2022-04-17T19:40:45"
     },
     {
+        "id": "R000950",
+        "status": "CANCELLED",
+        "startTime": "2022-05-06T20:57",
+        "endTime": "2022-04-17T19:43:06",
+        "startParkingName": "Parking Geronimo Roundtrip",
+        "billingStatus": "READY",
+        "fuelStart": 0.0,
+        "endFuel": null,
+        "car": {
+            "plate": "SS123SS",
+            "fuelLevel": 0.0,
+            "odometer": 40727.0,
+            "parkingName": "Parking Geronimo Roundtrip",
+            "idParkingSlot": "PGR08"
+        },
+        "user": {
+            "email": "luciano.ditomaso@gmail.com"
+        },
+        "createdAt": "2022-04-17T19:40:45",
+        "type": "M"
+
+    },
+    {
         "id": "R000949",
         "status": "COMPLETE",
         "startTime": "2022-04-19T18:20",
@@ -166,6 +189,28 @@
             "email": "gperezterra@ranflat.com.ar"
         },
         "createdAt": "2022-04-17T19:38:20"
+    },
+    {
+        "id": "R000948",
+        "status": "COMPLETE",
+        "startTime": "2022-04-25T09:13",
+        "endTime": "2022-04-25T10:13:54",
+        "startParkingName": "Parking Geronimo Roundtrip",
+        "billingStatus": "READY",
+        "fuelStart": 57.25,
+        "endFuel": 57.25,
+        "car": {
+            "plate": "SS123SS",
+            "fuelLevel": 57.25,
+            "odometer": 40727.0,
+            "parkingName": "Parking Geronimo Roundtrip",
+            "idParkingSlot": "PGR08"
+        },
+        "user": {
+            "email": "luciano.ditomaso@gmail.com"
+        },
+        "createdAt": "2022-04-17T19:38:20",
+        "type": "M"
     },
     {
         "id": "R000947",
@@ -819,6 +864,29 @@
         "createdAt": "2022-04-12T14:23:30"
     },
     {
+        "id": "R000917",
+        "status": "CANCELLED",
+        "startTime": "2022-04-12T16:37:36",
+        "endTime": "2022-04-12T14:24:02",
+        "startParkingName": "Parking Geronimo Roundtrip",
+        "billingStatus": "READY",
+        "fuelStart": 0.0,
+        "endFuel": null,
+        "car": {
+            "plate": "SS123SS",
+            "fuelLevel": 0.0,
+            "odometer": 40716.0,
+            "parkingName": "Parking Geronimo Roundtrip",
+            "idParkingSlot": "PGR08"
+        },
+        "user": {
+            "email": "luciano.ditomaso@gmail.com"
+        },
+        "createdAt": "2022-04-12T14:23:30",
+        "type": "M"
+
+    },
+    {
         "id": "R000916",
         "status": "CANCELLED",
         "startTime": "2022-04-13T14:35:10",
@@ -989,7 +1057,7 @@
     {
         "id": "R000908",
         "status": "CANCELLED",
-        "startTime": "2023-04-07T13:00",
+        "startTime": "2022-05-20T13:00",
         "endTime": "2022-04-12T19:01:33",
         "startParkingName": "Parking Geronimo Roundtrip",
         "billingStatus": "READY",
@@ -1003,9 +1071,10 @@
             "idParkingSlot": "PGR01"
         },
         "user": {
-            "email": "leonardo@mubee.io"
+            "email": "luciano.ditomaso@gmail.com"
         },
-        "createdAt": "2022-04-05T20:51:05"
+        "createdAt": "2019-01-01T20:51:05",
+        "type":"M"
     },
     {
         "id": "R000907",
@@ -1048,5 +1117,28 @@
             "email": "testbo@gmail.com"
         },
         "createdAt": "2022-04-05T11:46:32"
+    },
+    {
+        "id": "R000906",
+        "status": "COMPLETE",
+        "startTime": "2022-04-20T11:49:03",
+        "endTime": "2022-04-20T11:54:04",
+        "startParkingName": "Parking Geronimo Roundtrip",
+        "billingStatus": "READY",
+        "fuelStart": 34.9,
+        "endFuel": 34.9,
+        "car": {
+            "plate": "culo",
+            "fuelLevel": 34.9,
+            "odometer": 3088.0,
+            "parkingName": "Parking Geronimo Roundtrip",
+            "idParkingSlot": "PGR08"
+        },
+        "user": {
+            "email": "luciano.ditomaso@gmail.com"
+        },
+        "createdAt": "2022-05-20T11:46:32",
+        "type": "M"
     }
+
 ]
