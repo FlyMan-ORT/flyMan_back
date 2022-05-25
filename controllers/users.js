@@ -62,6 +62,11 @@ const getAllUsers = async (req, res) => {
     res.status(200).json(allUsers);
 }
 
+const getUserById = async (id) => {
+    let user = await UsersDB.getUserById(id);
+    return user;
+}
+
 const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -100,4 +105,4 @@ const deleteUser = async (req, res) => {
     }
 }
 
-module.exports = { login, register, getAllUsers, updateUser, deleteUser }
+module.exports = { login, register, getAllUsers, getUserById, updateUser, deleteUser }
