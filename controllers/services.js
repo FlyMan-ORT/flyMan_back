@@ -20,7 +20,6 @@ const createService = async (req, res) => {
 
         res.status(200).json({ serviceId: saved.insertedId });
     } catch (error) {
-        console.log(error)
         res.status(500).json();
     }
 }
@@ -30,9 +29,9 @@ const getAllServices = async (req, res) => {
         const ended = req.query.ended;
         let services = [];
         if (ended === 'true') {
-            services = await servicesDB.getEndedServices()
+            services = await servicesDB.getEndedServices();
         } else {
-            services = await servicesDB.getAllServices()
+            services = await servicesDB.getAllServices();
         }
 
         res.status(200).json(services);
@@ -50,7 +49,7 @@ const getService = async (req, res) => {
         const service = await servicesDB.getService(plate, reservation);
         if (!service) return res.status(404).json();
 
-        res.status(200).json({ service })
+        res.status(200).json({ service });
     } catch (error) {
         res.status(500).json();
     }
@@ -61,10 +60,10 @@ const getServiceById = async (req, res) => {
         const { id } = req.params;
         if (!id) return res.status(400).json();
 
-        const service = await servicesDB.getServiceById(id)
+        const service = await servicesDB.getServiceById(id);
         if (!service) return res.status(404).json();
 
-        res.status(200).json(service)
+        res.status(200).json(service);
     } catch (error) {
         res.status(500).json();
     }
