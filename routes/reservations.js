@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const authorization = require('../middlewares/authorization')
 
 /////////////////////////////////// FILE SYSTEM ////////////////////////////////////
 //lee de file system por el momento hasta que nos habilite la empresa
@@ -8,10 +9,12 @@ const PATH_RESERVATIONS = './data/mockUpReservations.json'
 /////////////////////////////////// FILE SYSTEM ////////////////////////////////////
 
 //All reservations for web (WEB)
-router.get('/', async (req, res) => {
-    const response = fs.readFileSync(PATH_RESERVATIONS,"utf-8", ()=> {});       
-
-    res.json(JSON.parse(response));
+router.get('/', authorization, async (req, res) => {
+    const { email } = req.user;
+    const response = fs.readFileSync(PATH_RESERVATIONS,"utf-8", ()=> {});
+    const parsedResponse = JSON.parse(response);
+    const userReservations = parsedResponse.filter((r) => r?.user?.email === email);
+    res.json(userReservations);
 });
 
 //All maintenance (WEB)
