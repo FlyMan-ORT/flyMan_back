@@ -1,17 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const cars = require('../data/cars')
+const carsController = require('../controllers/cars');
 
 //Get cars
-router.get('/', async (req, res) => {
-    let allCars = await cars.getAllCars();
-
-    res.json(allCars);
-});
+router.get('/', carsController.getAllCars);
 
 //Open car
 router.post('/open', async (req, res) => {
-    
     res.json('Open car');
 });
 
