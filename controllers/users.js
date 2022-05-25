@@ -1,7 +1,7 @@
 var moment = require('moment');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const UsersDB = require('../data/users');
+const usersDB = require('../data/users');
 
 
 const SALT_ROUNDS = 10;
@@ -15,7 +15,7 @@ const login = async (req, res) => {
         email = email.toLowerCase().trim();
 
         // Get user
-        const user = await UsersDB.getUserByEmail(email);
+        const user = await usersDB.getUserByEmail(email);
         if (!user) return res.status(404).json();
 
         // Validate password
@@ -40,13 +40,13 @@ const register = async (req, res) => {
         email = email.toLowerCase().trim();
         phone = phone.trim();
 
-        const user = await UsersDB.getUserByEmail(email);
+        const user = await usersDB.getUserByEmail(email);
         if (user) return res.status(400).json();
 
         // Hash password
         password = await bcrypt.hash(password, SALT_ROUNDS);
 
-        let saved = await UsersDB.addUser({ name, email, password, phone });
+        let saved = await usersDB.addUser({ name, email, password, phone });
         if (!saved.insertedId) return res.status(500).json({ error: 'Error' });
 
         const token = jwt.sign({ _id: saved.insertedId }, process.env.SECRET_KEY);
@@ -58,12 +58,12 @@ const register = async (req, res) => {
 }
 
 const getAllUsers = async (req, res) => {
-    let allUsers = await UsersDB.getAllUsers();
+    let allUsers = await usersDB.getAllUsers();
     res.status(200).json(allUsers);
 }
 
 const getUserById = async (id) => {
-    let user = await UsersDB.getUserById(id);
+    let user = await usersDB.getUserById(id);
     return user;
 }
 
@@ -73,10 +73,10 @@ const updateUser = async (req, res) => {
         const { name, email, phone } = req.body;
         if (!id || !name || !email || !phone) return res.status(400).json();
 
-        const user = await UsersDB.getUserById(id);
+        const user = await usersDB.getUserById(id);
         if (!user) return res.status(400).json();
-        
-        const updated = await UsersDB.updateUser(id, name, email, phone);
+
+        const updated = await usersDB.updateUser(id, name, email, phone);
         if (!updated || updated.modifiedCount === 0) return res.status(500).json();
 
         res.status(200).json({ updated: updated.modifiedCount > 0 });
@@ -91,11 +91,11 @@ const deleteUser = async (req, res) => {
         const { id } = req.params;
         if (!id) return res.status(400).json();
 
-        const user = await UsersDB.getUserById(id);
+        const user = await usersDB.getUserById(id);
         if (!user) return res.status(400).json();
-        
+
         const deletedAt = moment().format();
-        const deleted = await UsersDB.deleteUser(id, deletedAt);
+        const deleted = await usersDB.deleteUser(id, deletedAt);
         if (!deleted || deleted.modifiedCount === 0) return res.status(500).json();
 
         res.status(200).json({ deleted: deleted.modifiedCount > 0 });
