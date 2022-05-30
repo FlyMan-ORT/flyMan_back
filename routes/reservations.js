@@ -1,21 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const authorization = require('../middlewares/authorization')
-
-/////////////////////////////////// FILE SYSTEM ////////////////////////////////////
-//lee de file system por el momento hasta que nos habilite la empresa
-const fs = require('fs');
-const PATH_RESERVATIONS = './data/mockUpReservations.json'
-/////////////////////////////////// FILE SYSTEM ////////////////////////////////////
+const authorization = require('../middlewares/authorization');
+const reservationsController = require('../controllers/reservations');
 
 //All reservations for web (WEB)
-router.get('/', authorization, async (req, res) => {
-    const { email } = req.user;
-    const response = fs.readFileSync(PATH_RESERVATIONS,"utf-8", ()=> {});
-    const parsedResponse = JSON.parse(response);
-    const userReservations = parsedResponse.filter((r) => r?.user?.email === email);
-    res.json(userReservations);
-});
+router.get('/', authorization, reservationsController.getAllReservationsByUser);
 
 //All maintenance (WEB)
 router.get('/:type', async (req, res) => {

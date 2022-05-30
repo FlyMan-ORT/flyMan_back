@@ -12,4 +12,4 @@ async function getAllCars() {
     return cars;
 }
 
-module.exports = {getAllCars};
+module.exports = { getAllCars };
