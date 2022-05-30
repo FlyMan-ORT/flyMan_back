@@ -9,12 +9,26 @@ const PATH_RESERVATIONS = './data/mockUpReservations.json'
 /////////////////////////////////// FILE SYSTEM ////////////////////////////////////
 
 //All reservations for web (WEB)
-router.get('/', authorization, async (req, res) => {
+router.get('/', async (req, res) => {
+    const response = fs.readFileSync(PATH_RESERVATIONS,"utf-8", ()=> {});
+    res.json(JSON.parse(response));
+})
+//All reservations by User (App)
+router.get('/app', authorization, async (req, res) => {
     const { email } = req.user;
+    console.log('email');
     const response = fs.readFileSync(PATH_RESERVATIONS,"utf-8", ()=> {});
     const parsedResponse = JSON.parse(response);
     const userReservations = parsedResponse.filter((r) => r?.user?.email === email);
     res.json(userReservations);
+});
+
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    const response = fs.readFileSync(PATH_RESERVATIONS,"utf-8", ()=> {});
+    const parsedResponse = JSON.parse(response);
+    const userReservation = parsedResponse.find((r) => r?.id === id);
+    res.json(userReservation);
 });
 
 //All maintenance (WEB)
