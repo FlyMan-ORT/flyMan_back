@@ -17,6 +17,7 @@ const login = async (req, res) => {
         // Get user
         const user = await usersDB.getUserByEmail(email);
         if (!user) return res.status(404).json();
+        if (user.deletedAt) return res.status(404).json();
 
         // Validate password
         const match = await bcrypt.compare(password, user.password);
