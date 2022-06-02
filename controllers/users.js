@@ -72,17 +72,19 @@ const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, email, phone } = req.body;
+        var { password } = req.body;
         if (!id || !name || !email || !phone) return res.status(400).json();
-
         const user = await usersDB.getUserById(id);
         if (!user) return res.status(400).json();
 
-        const updated = await usersDB.updateUser(id, name, email, phone);
+        (password) ? password = await bcrypt.hash(password, SALT_ROUNDS): password = user.password;
+        
+        const updated = await usersDB.updateUser(id, name, email, phone, password);
+                
         if (!updated || updated.modifiedCount === 0) return res.status(500).json();
 
         res.status(200).json({ updated: updated.modifiedCount > 0 });
     } catch (error) {
-        console.log(error);
         res.status(500).json();
     }
 }
