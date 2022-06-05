@@ -27,8 +27,18 @@ const getReservationById = async (id) => {
     return reservationById;
 }
 
+const createReservation = async (reservation) => {
+    const connectiondb = await conn.getConnection();
+    const res = await connectiondb
+        .db(DATABASE)
+        .collection(RESERVATIONS_COLLECTION)
+        .insertOne(reservation);
+    return res;
+}
+
 module.exports = { 
     getAllReservations,
     getAllReservationsByEmail,
     getReservationById,
+    createReservation
 }
