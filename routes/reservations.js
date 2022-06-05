@@ -23,9 +23,7 @@ router.get('/:type/users/:id', async (req, res) => {
 });
 
 //Create maintenance reservation (WEB)
-router.post('/', async (req, res) => {
-    res.json('Create reservation');
-});
+router.post('/', reservationsController.createReservation);
 
 //Update maintenance reservation (WEB & APP)
 router.patch('/:id', async (req, res) => {
