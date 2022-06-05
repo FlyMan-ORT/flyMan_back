@@ -1,8 +1,15 @@
-const fs = require('fs');
+const conn = require('./connection.js');
+const { ObjectId } = require('bson');
+const DATABASE = 'FlyMan';
+const RESERVATIONS_COLLECTION = 'reservations';
 
 const getAllReservations = async () => {
-    const response = fs.readFileSync(process.env.PATH_RESERVATIONS, "utf-8");
-    const reservations = JSON.parse(response);
+    const connectiondb = await conn.getConnection();
+    const reservations = await connectiondb
+        .db(DATABASE)
+        .collection(RESERVATIONS_COLLECTION)
+        .find()
+        .toArray();
     return reservations;
 }
 
