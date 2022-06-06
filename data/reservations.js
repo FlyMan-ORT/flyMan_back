@@ -18,7 +18,7 @@ const getAllReservationsByEmail = async (email) => {
     const userReservations = await connectiondb
         .db(DATABASE)
         .collection(RESERVATIONS_COLLECTION)
-        .find({ 'user.email': email })
+        .find({ 'user':  { email }})
         .toArray();
     return userReservations;
 }
@@ -28,7 +28,8 @@ const getReservationById = async (id) => {
     const reservationById = await connectiondb
         .db(DATABASE)
         .collection(RESERVATIONS_COLLECTION)
-        .findOne({ _id: new ObjectId(id) });
+        .findOne({ id: id });
+        // .findOne({ _id: new ObjectId(id) });
     return reservationById;
 }
 
