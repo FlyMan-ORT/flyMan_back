@@ -14,16 +14,22 @@ const getAllReservations = async () => {
 }
 
 const getAllReservationsByEmail = async (email) => {
-    const response = fs.readFileSync(process.env.PATH_RESERVATIONS, "utf-8");
-    const reservations = JSON.parse(response);
-    const userReservations = reservations.filter((reservation) => reservation?.user?.email === email);
+    const connectiondb = await conn.getConnection();
+    const userReservations = await connectiondb
+        .db(DATABASE)
+        .collection(RESERVATIONS_COLLECTION)
+        .find({ 'user':  { email }})
+        .toArray();
     return userReservations;
 }
 
 const getReservationById = async (id) => {
-    const response = fs.readFileSync(process.env.PATH_RESERVATIONS, "utf-8");
-    const parsedResponse = JSON.parse(response);
-    const reservationById = parsedResponse.find((r) => r?.id === id);
+    const connectiondb = await conn.getConnection();
+    const reservationById = await connectiondb
+        .db(DATABASE)
+        .collection(RESERVATIONS_COLLECTION)
+        .findOne({ id: id });
+        // .findOne({ _id: new ObjectId(id) });
     return reservationById;
 }
 
