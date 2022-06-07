@@ -1,5 +1,6 @@
 const reservationsDB = require('../data/reservations');
 const usersDB = require('../data/users');
+const moment = require('moment')
 
 const getAllReservations = async (req, res) => {
     try {
@@ -14,7 +15,11 @@ const getAllReservationsByUser = async (req, res) => {
     try {
         const { email } = req.user;
         const reservations = await reservationsDB.getAllReservationsByEmail(email);
-        res.status(200).json(reservations);
+        const filteredReservations = reservations.filter((r)=> moment().isSame(r.startTime, 'day') && 
+                                                                    r.bookingType == "MAINTENANCE" && 
+                                                                    (r.status == "RESERVED" || r.status == "ACTIVE"))
+
+        res.status(200).json(filteredReservations);
     } catch (error) {
         res.status(500).json();
     }
