@@ -108,4 +108,28 @@ const deleteUser = async (req, res) => {
     }
 }
 
-module.exports = { login, register, getAllUsers, getUserById, updateUser, deleteUser }
+const checkPin = async (req, res) => {
+    try {
+        const { pin } = req.body;
+        const { _id: id } = req.user;
+        
+        if (!pin) return res.status(400).json();
+        const user = await usersDB.getUserById(id);
+        if (!user) return res.status(400).json();
+
+        if (pin === user.pin) res.status(200).json({ pin: true });
+        else res.status(500).json({ pin: false });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
+module.exports = {
+    login,
+    register,
+    getAllUsers,
+    getUserById,
+    updateUser,
+    deleteUser,
+    checkPin
+}
