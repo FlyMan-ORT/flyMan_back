@@ -12,6 +12,8 @@ router.get('/app', authorization, reservationsController.getAllReservationsByUse
 
 router.get('/:id', reservationsController.getReservationById);
 
+//router.get('/car/:plate', reservationsController.getReservationsByPlate);
+
 //All maintenance (WEB)
 router.get('/:type', async (req, res) => {
     res.json('All reservations by type');
