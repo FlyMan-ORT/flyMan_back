@@ -35,6 +35,16 @@ const getReservationById = async (req, res) => {
     }
 }
 
+// const getReservationsByPlate = async (req, res) => {
+//     try {
+//         const { plate } = req.params;
+//         const reservations = await reservationsDB.getReservationsByPlate(plate);
+//         res.status(200).json(reservations);
+//     } catch (error) {
+//         res.status(500).json();
+//     }
+// }
+
 const createReservation = async (req, res) => {
     try {
         let { car, employeeMail, reservationDay, reservationTime } = req.body;
@@ -42,26 +52,32 @@ const createReservation = async (req, res) => {
 
         const user = await usersDB.getUserByEmail(employeeMail);
         if (!user) return res.status(400).json();
-
-        const splitDate = reservationDay.split("-")
-        const year = parseInt(splitDate[0]);
-        const month = parseInt(splitDate[1]) - 1; // hay que restarle uno para que lo guarde bien
-        const day = parseInt(splitDate[2]);
-        const splitTime = reservationTime.split(":")
-        const hour = parseInt(splitTime[0]);
-        const minutes = parseInt(splitTime[1]);
-
+       
         // Create the correct date format
-        const newStartTime = new Date(year, month, day, hour, minutes);
+        const startTime = moment(`${reservationDay} ${reservationTime}`).utc().format();
         // Add 1 hour to the startTime
-        let endTime = new Date(newStartTime);
-        endTime.setHours(newStartTime.getHours() + 1);
+        let endTime = moment(startTime).add(1,'hours').utc().format();
+
+        const userReservations = await reservationsDB.getAllReservationsByEmail(employeeMail);
+        const userOcuppied = userReservations.some((r)=> moment(startTime).utc().isSame(r.startTime, 'day')
+                                                                && moment(startTime).utc().isBetween(moment(r.startTime).subtract(1, 'minutes'), r.endTime, 'hour')
+                                                                && r.bookingType == "MAINTENANCE" 
+                                                                && (r.status == "RESERVED" || r.status == "ACTIVE"))
         
+        if (userOcuppied) return res.status(400).json({error: "Este operario esta ocupado a esta hora"});
+
+        const carReservations = await reservationsDB.getReservationsByPlate(car.plate);
+        const isReserved = carReservations.some((r)=> moment(startTime).utc().isSame(r.startTime, 'day')
+                                                                && moment(startTime).utc().isBetween(moment(r.startTime).subtract(1, 'minutes'), r.endTime, 'hour')
+                                                                && (r.status == "RESERVED" || r.status == "ACTIVE"))
+
+        if (isReserved) return res.status(400).json({error: "Este auto tiene una reserva a esta hora"});
+
         // Actualmente guarda los horarios con UTC a pedido de Gero, es decir 3hs más de las que hay en Arg
         const reservation = {
             "status": "RESERVED",
-            "startTime": newStartTime.toISOString().replace(/\..+/, ''),
-            "endTime": endTime.toISOString().replace(/\..+/, ''),
+            "startTime": startTime,
+            "endTime": endTime,
             "startParkingName": "",
             "billingStatus": "ON_HOLD",
             "fuelStart": 0.0,
@@ -70,7 +86,7 @@ const createReservation = async (req, res) => {
             "user": {
                 "email": employeeMail
             },
-            "createdAt": new Date().toISOString().replace(/\..+/, ''),
+            "createdAt": moment.utc().format(),
             "bookingType": "MAINTENANCE"
         }       
         
@@ -79,7 +95,6 @@ const createReservation = async (req, res) => {
 
         res.status(200).json(saved.insertedId);
     } catch (error) {
-        console.log(error)
         res.status(500).send(error.message);
     }
 }
@@ -89,5 +104,6 @@ module.exports = {
     getAllReservationsByUser,
     getAllReservations,
     getReservationById,
+    //getReservationsByPlate,
     createReservation
 }

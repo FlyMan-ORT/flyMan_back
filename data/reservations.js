@@ -33,6 +33,16 @@ const getReservationById = async (id) => {
     return reservationById;
 }
 
+const getReservationsByPlate = async (plate) => {
+    const connectiondb = await conn.getConnection();
+    const reservationByPlate = await connectiondb
+        .db(DATABASE)
+        .collection(RESERVATIONS_COLLECTION)
+        .find({ 'car.plate':   plate })
+        .toArray();
+    return reservationByPlate;
+}
+
 const createReservation = async (reservation) => {
     const connectiondb = await conn.getConnection();
     const res = await connectiondb
@@ -46,5 +56,6 @@ module.exports = {
     getAllReservations,
     getAllReservationsByEmail,
     getReservationById,
+    getReservationsByPlate,
     createReservation
 }
