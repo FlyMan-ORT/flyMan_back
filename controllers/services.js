@@ -43,27 +43,13 @@ const getAllServices = async (req, res) => {
 
 const getService = async (req, res) => {
     try {
-        const { plate, reservation } = req.params;
-        if (!plate || !reservation) return res.status(400).json();
-
-        const service = await servicesDB.getService(plate, reservation);
-        if (!service) return res.status(404).json();
-
-        res.status(200).json({ service });
-    } catch (error) {
-        res.status(500).json();
-    }
-}
-
-const getServiceById = async (req, res) => {
-    try {
         const { id } = req.params;
         if (!id) return res.status(400).json();
 
-        const service = await servicesDB.getServiceById(id);
+        const service = await servicesDB.getService(id);
         if (!service) return res.status(404).json();
 
-        res.status(200).json(service);
+        res.status(200).json({ service });
     } catch (error) {
         res.status(500).json();
     }
@@ -88,4 +74,4 @@ const updateService = async (req, res) => {
     }
 }
 
-module.exports = { createService, getService, getServiceById, updateService, getAllServices }
+module.exports = { createService, getService, updateService, getAllServices }

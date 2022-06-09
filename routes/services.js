@@ -5,10 +5,7 @@ const ServicesController = require('../controllers/services');
 //Get all services
 router.get('/', ServicesController.getAllServices);
 
-router.get('/plate/:plate/reservation/:reservation', ServicesController.getService);
-
-//Get service by ID
-router.get('/:id', ServicesController.getServiceById );
+router.get('/:id', ServicesController.getService);
 
 //Create services
 router.post('/', ServicesController.createService);
