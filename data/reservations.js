@@ -56,7 +56,7 @@ const startReservation = async (reservationId) => {
     const connectiondb = await conn.getConnection();
     const record = await connectiondb
         .db(DATABASE)
-        .collection(USERS_COLLECTION)
+        .collection(RESERVATIONS_COLLECTION)
         .updateOne(
             { _id: new ObjectId(reservationId) },
             { $set: { status: "ACTIVE" } }
