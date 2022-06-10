@@ -18,7 +18,7 @@ const getAllReservationsByEmail = async (email) => {
     const userReservations = await connectiondb
         .db(DATABASE)
         .collection(RESERVATIONS_COLLECTION)
-        .find({ 'user':  { email }})
+        .find({ 'user': { email } })
         .toArray();
     return userReservations;
 }
@@ -29,7 +29,7 @@ const getReservationById = async (id) => {
         .db(DATABASE)
         .collection(RESERVATIONS_COLLECTION)
         .findOne({ id: id });
-        // .findOne({ _id: new ObjectId(id) });
+    // .findOne({ _id: new ObjectId(id) });
     return reservationById;
 }
 
@@ -38,7 +38,7 @@ const getReservationsByPlate = async (plate) => {
     const reservationByPlate = await connectiondb
         .db(DATABASE)
         .collection(RESERVATIONS_COLLECTION)
-        .find({ 'car.plate':   plate })
+        .find({ 'car.plate': plate })
         .toArray();
     return reservationByPlate;
 }
@@ -52,10 +52,23 @@ const createReservation = async (reservation) => {
     return res;
 }
 
-module.exports = { 
+const startReservation = async (reservationId) => {
+    const connectiondb = await conn.getConnection();
+    const record = await connectiondb
+        .db(DATABASE)
+        .collection(USERS_COLLECTION)
+        .updateOne(
+            { _id: new ObjectId(reservationId) },
+            { $set: { status: "ACTIVE" } }
+        );
+    return record;
+}
+
+module.exports = {
     getAllReservations,
     getAllReservationsByEmail,
     getReservationById,
     getReservationsByPlate,
-    createReservation
+    createReservation,
+    startReservation
 }
