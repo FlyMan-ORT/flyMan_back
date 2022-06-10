@@ -1,14 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const ServicesController = require('../controllers/services');
+const authorization = require('../middlewares/authorization');
 
 //Get all services
 router.get('/', ServicesController.getAllServices);
 
+router.get('/plate/:plate/reservation/:reservationId', authorization, ServicesController.getServiceByPlateAndReservation);
+
 router.get('/:id', ServicesController.getService);
 
 //Create services
-router.post('/', ServicesController.createService);
+router.post('/', authorization, ServicesController.createService);
 
 //Update services
 router.patch('/:id', ServicesController.updateService);
