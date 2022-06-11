@@ -94,12 +94,12 @@ const updateService = async (req, res) => {
             || validateService.fuel(fuel)
         ) return res.status(400).json();
 
-        const service = await getServiceById(id);
+        const service = await servicesDB.getService(id);
         if (!service) return res.status(404).json();
 
         const endDate = moment.utc().format();
         // actualizar con los datos completos
-        const updated = await servicesDB.updateService(id, tasks, endDate);
+        const updated = await servicesDB.updateService(id, req.body, endDate);
         if (!updated || updated.modifiedCount === 0) return res.status(500).json();
 
         const isModified = await reservationsService.finishReservation(service.reservationId);
