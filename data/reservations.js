@@ -64,11 +64,24 @@ const startReservation = async (reservationId) => {
     return record;
 }
 
+const finishReservation = async (reservationId) => {
+    const connectiondb = await conn.getConnection();
+    const record = await connectiondb
+        .db(DATABASE)
+        .collection(RESERVATIONS_COLLECTION)
+        .updateOne(
+            { _id: new ObjectId(reservationId) },
+            { $set: { status: "COMPLETE" } }
+        );
+    return record;
+}
+
 module.exports = {
     getAllReservations,
     getAllReservationsByEmail,
     getReservationById,
     getReservationsByPlate,
     createReservation,
-    startReservation
+    startReservation,
+    finishReservation,
 }
