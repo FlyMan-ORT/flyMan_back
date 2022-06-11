@@ -68,7 +68,8 @@ const createReservation = async (req, res) => {
 
         const carReservations = await reservationsDB.getReservationsByPlate(car.plate);
         const isReserved = carReservations.some((r)=> moment(startTime).utc().isSame(r.startTime, 'day')
-                                                                && moment(startTime).utc().isBetween(moment(r.startTime).subtract(1, 'minutes'), r.endTime, 'hour')
+                                                                && (moment(startTime).utc().isBetween(moment(r.startTime).subtract(1, 'minutes'), r.endTime, 'hour')
+                                                                || moment(endTime).utc().isBetween(moment(r.startTime).subtract(1, 'minutes'), r.endTime, 'hour'))
                                                                 && (r.status == "RESERVED" || r.status == "ACTIVE"))
 
         if (isReserved) return res.status(400).json({error: "Este auto ya tiene una reserva a esta hora."});
