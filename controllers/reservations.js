@@ -61,7 +61,7 @@ const createReservation = async (req, res) => {
 
         const userReservations = await reservationsDB.getAllReservationsByEmail(employeeMail);
         const userOcuppied = userReservations.some((r) => startTime.isSame(r.startTime, 'day')
-            && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, 'hour')
+            && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, undefined)
             && r.bookingType == "MAINTENANCE"
             && (r.status == "RESERVED" || r.status == "ACTIVE"))
 
@@ -69,7 +69,7 @@ const createReservation = async (req, res) => {
 
         const carReservations = await reservationsDB.getReservationsByPlate(car.plate);
         const isReserved = carReservations.some((r) => startTime.isSame(r.startTime, 'day')
-            && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, 'hour')
+            && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, undefined)
             && (r.status == "RESERVED" || r.status == "ACTIVE"))
 
         if (isReserved) return res.status(400).json({ error: "Este auto ya tiene una reserva a esta hora." });
