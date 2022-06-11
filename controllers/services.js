@@ -19,7 +19,7 @@ const createService = async (req, res) => {
             plate: plate,
             reservationId: reservationId,
             userEmail: email,
-            startDate: moment().format(),
+            startDate: moment.utc().format(),
         }
 
         const saved = await servicesDB.saveService(service);
@@ -82,15 +82,28 @@ const getServiceByPlateAndReservation = async (req, res) => {
 const updateService = async (req, res) => {
     try {
         const { id } = req.params;
-        const { tasks } = req.body;
-        if (!id || !tasks) return res.status(400).json();
+        const { tasks, damage, tires, securityKit, documents, cleanliness, fuel } = req.body;
+        if (
+            !id
+            || !tasks
+            || validateService.damage(damage)
+            || validateService.tires(tires)
+            || validateService.securityKit(securityKit)
+            || validateService.documents(documents)
+            || validateService.cleanliness(cleanliness)
+            || validateService.fuel(fuel)
+        ) return res.status(400).json();
 
         const service = await getServiceById(id);
         if (!service) return res.status(404).json();
 
-        const endDate = moment().format();
-        const updated = await servicesDB.updateService(id, tasks, endDate);;
+        const endDate = moment.utc().format();
+        // actualizar con los datos completos
+        const updated = await servicesDB.updateService(id, tasks, endDate);
         if (!updated || updated.modifiedCount === 0) return res.status(500).json();
+
+        const isModified = await reservationsService.finishReservation(service.reservationId);
+        console.log(isModified);
 
         res.status(200).json({ updated: updated.modifiedCount > 0 });
     } catch (error) {
@@ -98,4 +111,39 @@ const updateService = async (req, res) => {
     }
 }
 
-module.exports = { createService, getService, getServiceByPlateAndReservation, updateService, getAllServices }
+const validateService = {
+    damage: (damage) => {
+        if (!damage) return false;
+        const { isDamaged, damageDescription } = damage;
+        if (isDamaged === undefined || isDamaged === null) return false;
+        if (damageDescription === undefined || damageDescription === null) return false;
+        return true;
+    },
+    tires: (tires) => {
+        if (tires === undefined || tires === null) return false;
+        return true;
+    },
+    securityKit: (securityKit) => {
+        if (securityKit === undefined || securityKit === null) return false;
+        return true;
+    },
+    documents: (documents) => {
+        if (documents === undefined || documents === null) return false;
+        return true;
+    },
+    cleanliness: (cleanliness) => {
+        if (!cleanliness) return false;
+        if (!isNaN(cleanliness)) return false;
+        return true;
+    },
+    fuel: (fuel) => {
+        if (!fuel) return false;
+        const { fuelLoad, fuelPrice } = fuel;
+        if (fuelLoad === undefined || fuelLoad === null) return false;
+        if (fuelPrice === undefined || fuelPrice === null) return false;
+        if (!isNaN(fuelPrice)) return false;
+        return true;
+    }
+}
+
+module.exports = { createService, getService, getServiceByPlateAndReservation, updateService, getAllServices };
