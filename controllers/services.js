@@ -83,15 +83,16 @@ const updateService = async (req, res) => {
     try {
         const { id } = req.params;
         const { tasks, damage, tires, securityKit, documents, cleanliness, fuel } = req.body;
+
         if (
             !id
             || !tasks
-            || validateService.damage(damage)
-            || validateService.tires(tires)
-            || validateService.securityKit(securityKit)
-            || validateService.documents(documents)
-            || validateService.cleanliness(cleanliness)
-            || validateService.fuel(fuel)
+            || !validateService.damage(damage)
+            || !validateService.tires(tires)
+            || !validateService.securityKit(securityKit)
+            || !validateService.documents(documents)
+            || !validateService.cleanliness(cleanliness)
+            || !validateService.fuel(fuel)
         ) return res.status(400).json();
 
         const service = await servicesDB.getService(id);
@@ -133,7 +134,7 @@ const validateService = {
     },
     cleanliness: (cleanliness) => {
         if (!cleanliness) return false;
-        if (!isNaN(cleanliness)) return false;
+        if (typeof cleanliness !== 'number') return false;
         return true;
     },
     fuel: (fuel) => {
@@ -141,7 +142,7 @@ const validateService = {
         const { fuelLoad, fuelPrice } = fuel;
         if (fuelLoad === undefined || fuelLoad === null) return false;
         if (fuelPrice === undefined || fuelPrice === null) return false;
-        if (!isNaN(fuelPrice)) return false;
+        if (typeof fuelPrice !== 'number') return false;
         return true;
     }
 }
