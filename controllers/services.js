@@ -25,8 +25,7 @@ const createService = async (req, res) => {
         const saved = await servicesDB.saveService(service);
         if (!saved.insertedId) return res.status(500).json({error: "Ocurrió un error al iniciar el servicio. Inténtelo nuevamente."});
 
-        const isModified = await reservationsService.startReservation(reservationId);
-        console.log(isModified);
+        await reservationsService.startReservation(reservationId);
 
         res.status(200).json({ serviceId: saved.insertedId });
     } catch (error) {
