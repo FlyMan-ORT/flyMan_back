@@ -45,17 +45,37 @@ async function getService(id) {
     return service;
 }
 
-async function updateService(id, tasks, endDate) {
+async function getServiceByPlateAndReservation(plate, reservationId) {
+    const connectiondb = await conn.getConnection();
+    const service = await connectiondb
+        .db(DATABASE)
+        .collection(SERVICES_COLLECTION)
+        .findOne({ plate, reservationId });
+
+    return service;
+}
+
+async function updateService(id, body, endDate) {
+    const { tasks, damage, tires, securityKit, documents, cleanliness, fuel } = body;
     const connectiondb = await conn.getConnection();
     const record = await connectiondb
         .db(DATABASE)
         .collection(SERVICES_COLLECTION)
         .updateOne(
             { _id: new ObjectId(id) },
-            { $set: { tasks: tasks, endDate: endDate } }
+            { $set: { 
+                tasks,
+                damage,
+                fuel,
+                tires,
+                securityKit,
+                documents,
+                cleanliness,
+                endDate 
+            } }
         );
 
     return record;
 }
 
-module.exports = { saveService, getService, updateService, getAllServices, getEndedServices };
+module.exports = { saveService, getService, getServiceByPlateAndReservation, updateService, getAllServices, getEndedServices };
