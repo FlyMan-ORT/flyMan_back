@@ -9,6 +9,9 @@ router.get('/', usersController.getAllUsers);
 //Users login (APP)
 router.post('/login', usersController.login);
 
+//Users login (WEB)
+router.post('/weblogin', usersController.webLogin);
+
 //Users register (WEB)
 router.post('/register', usersController.register);
 
