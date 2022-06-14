@@ -59,7 +59,7 @@ const webLogin = async (req, res) => {
 const register = async (req, res) => {
     try {
         let { name, email, password, phone, pin, admin} = req.body;
-        if (!name || !email || !password || !phone || !pin || !admin) return res.status(400).json({error: "No se pueden enviar campos vacíos."});
+        if (!name || !email || !password || !phone || !pin || (admin===null || admin ===undefined)) return res.status(400).json({error: "No se pueden enviar campos vacíos."});
 
         // Clean fields
         email = email.toLowerCase().trim();
