@@ -28,8 +28,7 @@ const getReservationById = async (id) => {
     const reservationById = await connectiondb
         .db(DATABASE)
         .collection(RESERVATIONS_COLLECTION)
-        .findOne({ id: id });
-    // .findOne({ _id: new ObjectId(id) });
+        .findOne({ _id: new ObjectId(id) });
     return reservationById;
 }
 

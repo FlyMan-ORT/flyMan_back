@@ -30,22 +30,16 @@ const getAllReservationsByUser = async (req, res) => {
 const getReservationById = async (req, res) => {
     try {
         const { id } = req.params;
-        const reservations = await reservationsDB.getReservationById(id);
-        res.status(200).json(reservations);
+        if (!id) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
+
+        const reservation = await reservationsDB.getReservationById(id);
+        if (!reservation) return res.status(404).json({ error: "Reserva inexistente." });
+
+        res.status(200).json(reservation);
     } catch (error) {
         res.status(500).json({ error: "Ocurrió un error al cargar la reserva. Inténtelo nuevamente." });
     }
 }
-
-// const getReservationsByPlate = async (req, res) => {
-//     try {
-//         const { plate } = req.params;
-//         const reservations = await reservationsDB.getReservationsByPlate(plate);
-//         res.status(200).json(reservations);
-//     } catch (error) {
-//         res.status(500).json({error: "Ocurrió un error al cargar la reserva. Inténtelo nuevamente."});
-//     }
-// }
 
 const createReservation = async (req, res) => {
     try {
