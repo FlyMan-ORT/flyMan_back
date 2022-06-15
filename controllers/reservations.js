@@ -63,14 +63,14 @@ const createReservation = async (req, res) => {
         const userOcuppied = userReservations.some((r) => startTime.isSame(r.startTime, 'day')
             && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, undefined)
             && r.bookingType == "MAINTENANCE"
-            && (r.status == "RESERVED" || r.status == "ACTIVE"))
+            && (r.status == "RESERVED" || r.status == "ACTIVE" || r.status == "COMPLETE"))
 
         if (userOcuppied) return res.status(400).json({ error: "Este operario esta ocupado a esta hora." });
 
         const carReservations = await reservationsDB.getReservationsByPlate(car.plate);
         const isReserved = carReservations.some((r) => startTime.isSame(r.startTime, 'day')
             && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, undefined)
-            && (r.status == "RESERVED" || r.status == "ACTIVE"))
+            && (r.status == "RESERVED" || r.status == "ACTIVE" || r.status == "COMPLETE"))
 
         if (isReserved) return res.status(400).json({ error: "Este auto ya tiene una reserva a esta hora." });
 
