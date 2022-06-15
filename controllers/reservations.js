@@ -1,4 +1,5 @@
 const reservationsDB = require('../data/reservations');
+const reservationsService = require('../services/reservations');
 const usersDB = require('../data/users');
 const dateUtils = require('../utils/dateUtil');
 const moment = require('moment')
@@ -101,11 +102,35 @@ const createReservation = async (req, res) => {
     }
 }
 
+const deleteReservation = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) return res.status(400).json({ error: "Ocurrió un error al cancelar la reserva. Inténtelo nuevamente." });
+
+        const reservation = await reservationsDB.getReservationById(id);
+        if (!reservation) return res.status(400).json({ error: "Reserva inexistente." });
+
+        if (reservation.status == "ACTIVE") return res.status(400).json({ error: "No se puede cancelar una reserva activa." });
+        if (reservation.status == "COMPLETE") return res.status(400).json({ error: "No se puede cancelar una reserva finalizada." });
+        if (reservation.status == "CANCELLED") return res.status(400).json({ error: "Esta reserva ya fue candelada anteriormente." });
+
+        const isPast = moment().isAfter(reservation.startTime);
+        if (isPast) return res.status(400).json({ error: "No se puede eliminar una reserva pasada." });
+
+        const isModified = await reservationsService.cancelReservation(id);
+        if (!isModified) return res.status(500).json({ error: "Ocurrió un error al cancelar la reserva. Inténtelo nuevamente." });
+
+        res.status(200).json(isModified);
+    } catch (error) {
+        return res.status(500).json({ error: "Ocurrió un error al cancelar la reserva. Inténtelo nuevamente." });
+    }
+}
 
 module.exports = {
     getAllReservationsByUser,
     getAllReservations,
     getReservationById,
     //getReservationsByPlate,
-    createReservation
+    createReservation,
+    deleteReservation,
 }

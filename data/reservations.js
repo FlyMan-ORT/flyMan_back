@@ -76,6 +76,18 @@ const finishReservation = async (reservationId) => {
     return record;
 }
 
+const cancelReservation = async (reservationId) => {
+    const connectiondb = await conn.getConnection();
+    const record = await connectiondb
+        .db(DATABASE)
+        .collection(RESERVATIONS_COLLECTION)
+        .updateOne(
+            { _id: new ObjectId(reservationId) },
+            { $set: { status: "CANCELLED" } }
+        );
+    return record;
+}
+
 module.exports = {
     getAllReservations,
     getAllReservationsByEmail,
@@ -84,4 +96,5 @@ module.exports = {
     createReservation,
     startReservation,
     finishReservation,
+    cancelReservation,
 }

@@ -3,7 +3,7 @@ const reservationsDB = require('../data/reservations');
 const startReservation = async (reservationId) => {
     try {
         const updated = await reservationsDB.startReservation(reservationId);
-        return (updated || updated.modifiedCount !== 0);
+        return (updated && updated.modifiedCount !== 0);
     } catch (error) {
         return false;
     }
@@ -12,10 +12,19 @@ const startReservation = async (reservationId) => {
 const finishReservation = async (reservationId) => {
     try {
         const updated = await reservationsDB.finishReservation(reservationId);
-        return (updated || updated.modifiedCount !== 0);
+        return (updated && updated.modifiedCount !== 0);
     } catch (error) {
         return false;
     }
 }
 
-module.exports = { startReservation, finishReservation };
+const cancelReservation = async (reservationId) => {
+    try {
+        const updated = await reservationsDB.cancelReservation(reservationId);
+        return (updated && updated.modifiedCount !== 0);
+    } catch (error) {
+        return false;
+    }
+}
+
+module.exports = { startReservation, finishReservation, cancelReservation };
