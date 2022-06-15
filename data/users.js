@@ -44,14 +44,14 @@ async function addUser(user) {
     return res;
 }
 
-async function updateUser(id, name, email, phone, pin, password) {
+async function updateUser(id, name, email, phone, pin, admin, password) {
     const connectiondb = await conn.getConnection();
     const record = await connectiondb
         .db(DATABASE)
         .collection(USERS_COLLECTION)
         .updateOne(
             { _id: new ObjectId(id) },
-            { $set: { name: name, email: email, phone: phone, pin:pin, password: password } }
+            { $set: { name: name, email: email, phone: phone, pin:pin, admin: admin, password: password } }
         );
     return record;
 }
