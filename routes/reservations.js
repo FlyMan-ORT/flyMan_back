@@ -32,4 +32,6 @@ router.patch('/:id', async (req, res) => {
     res.json('Update reservation');
 });
 
+router.delete('/:id', reservationsController.deleteReservation);
+
 module.exports = router;

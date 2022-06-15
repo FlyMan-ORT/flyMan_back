@@ -28,8 +28,7 @@ const getReservationById = async (id) => {
     const reservationById = await connectiondb
         .db(DATABASE)
         .collection(RESERVATIONS_COLLECTION)
-        .findOne({ id: id });
-    // .findOne({ _id: new ObjectId(id) });
+        .findOne({ _id: new ObjectId(id) });
     return reservationById;
 }
 
@@ -76,6 +75,18 @@ const finishReservation = async (reservationId) => {
     return record;
 }
 
+const cancelReservation = async (reservationId) => {
+    const connectiondb = await conn.getConnection();
+    const record = await connectiondb
+        .db(DATABASE)
+        .collection(RESERVATIONS_COLLECTION)
+        .updateOne(
+            { _id: new ObjectId(reservationId) },
+            { $set: { status: "CANCELLED" } }
+        );
+    return record;
+}
+
 module.exports = {
     getAllReservations,
     getAllReservationsByEmail,
@@ -84,4 +95,5 @@ module.exports = {
     createReservation,
     startReservation,
     finishReservation,
+    cancelReservation,
 }
