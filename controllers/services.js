@@ -5,7 +5,8 @@ const reservationsService = require('../services/reservations');
 const createService = async (req, res) => {
     try {
         const { plate, reservationId, carImage } = req.body;
-        if (!plate || !reservationId || carImage) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
+        console.log(req.body);
+        if (!plate || !reservationId || !carImage) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
 
         // Chequear si tiene una reserva activa
         // Chequear si tiene un servicio no finalizado?
