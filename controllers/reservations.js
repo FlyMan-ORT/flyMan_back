@@ -91,7 +91,6 @@ const createReservation = async (req, res) => {
 
         res.status(200).json(saved.insertedId);
     } catch (error) {
-        console.log(error)
         res.status(500).json({ error: "Ocurrió un error al crear la reserva. Inténtelo nuevamente." });
     }
 }
