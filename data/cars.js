@@ -12,4 +12,13 @@ async function getAllCars() {
     return cars;
 }
 
-module.exports = { getAllCars };
+async function getCarByPlate(plate) {
+    const connectiondb = await conn.getConnection();
+    const car = await connectiondb
+        .db(DATABASE)
+        .collection(CARS_COLLECTION)
+        .findOne({plate: plate});
+    return car;
+}
+
+module.exports = { getAllCars, getCarByPlate };
