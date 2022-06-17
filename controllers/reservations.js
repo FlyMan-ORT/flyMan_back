@@ -1,6 +1,7 @@
 const reservationsDB = require('../data/reservations');
 const reservationsService = require('../services/reservations');
 const usersDB = require('../data/users');
+const carsDB = require('../data/cars');
 const dateUtils = require('../utils/dateUtil');
 const moment = require('moment')
 
@@ -27,34 +28,23 @@ const getAllReservationsByUser = async (req, res) => {
     }
 }
 
-const getReservationById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
-
-        const reservation = await reservationsDB.getReservationById(id);
-        if (!reservation) return res.status(404).json({ error: "Reserva inexistente." });
-
-        res.status(200).json(reservation);
-    } catch (error) {
-        res.status(500).json({ error: "Ocurrió un error al cargar la reserva. Inténtelo nuevamente." });
-    }
-}
-
 const createReservation = async (req, res) => {
     try {
-        const { car, employeeMail, reservationDay, reservationTime } = req.body;
-        if (!car || !employeeMail || !reservationDay || !reservationTime) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
+        const { plate, mail, day, time } = req.body;
+        if (!plate || !mail || !day || !time) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
 
-        const user = await usersDB.getUserByEmail(employeeMail);
+        const user = await usersDB.getUserByEmail(mail);
         if (!user) return res.status(400).json({ error: "Usuario inexistente." });
 
+        const car = await carsDB.getCarByPlate(plate);
+        if (!car) return res.status(400).json({ error: "Auto inexistente." });
+
         // Create the correct date format
-        const startTime = moment(`${reservationDay} ${reservationTime}`).utc();
+        const startTime = moment(`${day} ${time}`).utc();
         // Add 1 hour to the startTime
         const endTime = moment(startTime).add(1, 'hours').utc();
 
-        const userReservations = await reservationsDB.getAllReservationsByEmail(employeeMail);
+        const userReservations = await reservationsDB.getAllReservationsByEmail(mail);
         const userOcuppied = userReservations.some((r) => startTime.isSame(r.startTime, 'day')
             && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, undefined)
             && r.bookingType == "MAINTENANCE"
@@ -62,7 +52,7 @@ const createReservation = async (req, res) => {
 
         if (userOcuppied) return res.status(400).json({ error: "Este operario esta ocupado a esta hora." });
 
-        const carReservations = await reservationsDB.getReservationsByPlate(car.plate);
+        const carReservations = await reservationsDB.getReservationsByPlate(plate);
         const isReserved = carReservations.some((r) => startTime.isSame(r.startTime, 'day')
             && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, undefined)
             && (r.status == "RESERVED" || r.status == "ACTIVE" || r.status == "COMPLETE"))
@@ -80,14 +70,14 @@ const createReservation = async (req, res) => {
             "endFuel": null,
             "car": car,
             "user": {
-                "email": employeeMail
+                "email": mail
             },
             "createdAt": moment.utc().format(),
             "bookingType": "MAINTENANCE"
         }
 
         let saved = await reservationsDB.createReservation(reservation);
-        if (!saved.insertedId) return res.status(500).json({ error: "Ocurrió un error al crear la reserva. Inténtelo nuevamente......" });
+        if (!saved.insertedId) return res.status(500).json({ error: "Ocurrió un error al crear la reserva. Inténtelo nuevamente." });
 
         res.status(200).json(saved.insertedId);
     } catch (error) {
@@ -122,8 +112,6 @@ const deleteReservation = async (req, res) => {
 module.exports = {
     getAllReservationsByUser,
     getAllReservations,
-    getReservationById,
-    //getReservationsByPlate,
     createReservation,
     deleteReservation,
 }
