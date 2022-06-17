@@ -44,6 +44,8 @@ const createReservation = async (req, res) => {
         // Add 1 hour to the startTime
         const endTime = moment(startTime).add(1, 'hours').utc();
 
+        if (startTime.isBefore(moment())) return res.status(400).json({ error: "No se puede hacer una reserva en una hora pasada." });
+
         const userReservations = await reservationsDB.getAllReservationsByEmail(mail);
         const userOcuppied = userReservations.some((r) => startTime.isSame(r.startTime, 'day')
             && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, undefined)
