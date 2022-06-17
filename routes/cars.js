@@ -3,13 +3,10 @@ const router = express.Router();
 const carsController = require('../controllers/cars');
 const authorization = require('../middlewares/authorization');
 
-//Get cars
 router.get('/', carsController.getAllCars);
 
-//Open car
-router.post('/open', carsController.openCar);
+router.post('/open/:plate', carsController.openCar);
 
-//Close car
-router.post('/close', carsController.closeCar);
+router.post('/close/:plate', carsController.closeCar);
 
 module.exports = router;
