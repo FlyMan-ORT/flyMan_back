@@ -1,11 +1,12 @@
 var moment = require('moment');
 const servicesDB = require('../data/services');
 const reservationsService = require('../services/reservations');
+const carsService = require('../services/cars');
 
 const createService = async (req, res) => {
     try {
         const { plate, reservationId, carImage } = req.body;
-        console.log(req.body);
+
         if (!plate || !reservationId || !carImage) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
 
         // Chequear si tiene una reserva activa
@@ -90,6 +91,8 @@ const updateService = async (req, res) => {
         if (!updated || updated.modifiedCount === 0) return res.status(500).json();
 
         await reservationsService.finishReservation(service.reservationId);
+
+        await carsService.updateLastServiceDate(service.plate, endDate);
 
         res.status(200).json({ updated: updated.modifiedCount > 0 });
     } catch (error) {

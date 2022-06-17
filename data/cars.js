@@ -21,4 +21,16 @@ async function getCarByPlate(plate) {
     return car;
 }
 
-module.exports = { getAllCars, getCarByPlate };
+const updateLastServiceDate = async (plate, date) => {
+    const connectiondb = await conn.getConnection();
+    const updated = await connectiondb.
+        db(DATABASE)
+        .collection(CARS_COLLECTION)
+        .updateOne(
+            { "plate": plate },
+            { $set: { "lastServiceDate": date } }
+        );
+    return updated;
+}
+
+module.exports = { getAllCars, getCarByPlate, updateLastServiceDate };
