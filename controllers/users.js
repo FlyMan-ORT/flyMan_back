@@ -100,7 +100,7 @@ const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, email, phone, pin, admin } = req.body;
-        var { password } = req.body;
+        let { password } = req.body;
         if (!id || !name || !email || !phone || !pin || (admin === null || admin === undefined)) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
         const user = await usersDB.getUserById(id);
         if (!user) return res.status(400).json({ error: "Usuario inexistente." });
