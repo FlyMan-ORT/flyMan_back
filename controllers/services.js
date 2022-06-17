@@ -51,20 +51,6 @@ const getAllServices = async (req, res) => {
     }
 }
 
-const getService = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
-
-        const service = await servicesDB.getService(id);
-        if (!service) return res.status(404).json({ error: "Servicio inexistente." });
-
-        res.status(200).json({ service });
-    } catch (error) {
-        res.status(500).json({ error: "Ocurrió un error al cargar el servicio. Inténtelo nuevamente." });
-    }
-}
-
 const getServiceByPlateAndReservation = async (req, res) => {
     try {
         const { plate, reservationId } = req.params;
@@ -146,4 +132,4 @@ const validateService = {
     }
 }
 
-module.exports = { createService, getService, getServiceByPlateAndReservation, updateService, getAllServices };
+module.exports = { createService, getServiceByPlateAndReservation, updateService, getAllServices };

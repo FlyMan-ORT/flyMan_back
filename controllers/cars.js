@@ -11,17 +11,29 @@ const getAllCars = async (req, res) => {
 
 const openCar = async (req, res) => {
     try {
+        const { plate } = req.params;
+        if (!plate) return res.status(400).json({ error: "Ocurrió un error al abrir el auto. Inténtelo nuevamente." });
+
+        const car = await carsDB.getCarByPlate(plate);
+        if (!car) return res.status(404).json({ error: "Auto inexistente." });
+        
         res.status(200).send(true);
     } catch (error) {
-        res.status(500).json({error: "Ocurrió un error al abrir el auto. Inténtelo nuevamente."});
+        res.status(500).json({ error: "Ocurrió un error al abrir el auto. Inténtelo nuevamente." });
     }
 }
 
 const closeCar = async (req, res) => {
     try {
+        const { plate } = req.params;
+        if (!plate) return res.status(400).json({ error: "Ocurrió un error al cerrar el auto. Inténtelo nuevamente." });
+
+        const car = await carsDB.getCarByPlate(plate);
+        if (!car) return res.status(404).json({ error: "Auto inexistente." });
+
         res.status(200).send(true);
     } catch (error) {
-        res.status(500).json({error: "Ocurrió un error al cerrar el auto. Inténtelo nuevamente."});
+        res.status(500).json({ error: "Ocurrió un error al cerrar el auto. Inténtelo nuevamente." });
     }
 }
 
