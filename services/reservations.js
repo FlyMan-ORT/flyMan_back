@@ -27,4 +27,15 @@ const cancelReservation = async (reservationId) => {
     }
 }
 
-module.exports = { startReservation, finishReservation, cancelReservation };
+const checkActiveReservation = async (email) => {
+    console.log("entrando?", email)
+    try{
+        const reservationsByUser = await reservationsDB.getAllReservationsByEmail(email);
+        const activeReservationsByUser = reservationsByUser.filter(r => r.status=== "ACTIVE");                                                  
+        return (activeReservationsByUser) ? true: false;
+    } catch(error){
+        return false
+    }
+}
+
+module.exports = { startReservation, finishReservation, cancelReservation, checkActiveReservation };
