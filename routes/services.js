@@ -9,6 +9,6 @@ router.get('/plate/:plate/reservation/:reservationId', authorization, ServicesCo
 
 router.post('/', authorization, ServicesController.createService);
 
-router.patch('/:id', ServicesController.updateService);
+router.patch('/:id', authorization, ServicesController.updateService);
 
 module.exports = router;
