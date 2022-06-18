@@ -28,12 +28,11 @@ const cancelReservation = async (reservationId) => {
 }
 
 const checkActiveReservation = async (email) => {
-    console.log("entrando?", email)
-    try{
+    try {
         const reservationsByUser = await reservationsDB.getAllReservationsByEmail(email);
-        const activeReservationsByUser = reservationsByUser.filter(r => r.status=== "ACTIVE");                                                  
-        return (activeReservationsByUser) ? true: false;
-    } catch(error){
+        const activeReservationsByUser = reservationsByUser.some(r => r.status === "ACTIVE");
+        return activeReservationsByUser
+    } catch (error) {
         return false
     }
 }
