@@ -9,13 +9,12 @@ const createService = async (req, res) => {
 
         if (!plate || !reservationId || !carImage) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
 
-        // Chequear si tiene una reserva activa
-        // Chequear si tiene un servicio no finalizado?
-
         const serviceExistant = await servicesDB.getServiceByPlateAndReservation(plate, reservationId);
         if (serviceExistant) return res.status(400).json({ error: "Servicio ya iniciado." });
 
         const { email } = req.user;
+        const activeReservation = await reservationsService.checkActiveReservation(email);;
+        if (activeReservation) return res.status(400).json({ error: "El usuario ya tiene una reserva activa."})
 
         const service = {
             plate: plate,

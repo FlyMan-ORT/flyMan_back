@@ -7,13 +7,13 @@ const authorization = async (req, res, next) => {
         console.log(token);
         let user = await usersController.getUserById(token._id);
         if (!user) {
-            res.status(401).json({error: "Usuario no autorizado."});
+            res.status(401).json({ error: "Usuario no autorizado." });
         } else {
             req.user = user;
             next();
         }
     } else {
-        res.status(401).json({error: "Usuario no autorizado."});
+        res.status(401).json({ error: "Usuario no autorizado." });
     }
 }
 

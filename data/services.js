@@ -78,4 +78,4 @@ async function updateService(id, body, endDate) {
     return record;
 }
 
-module.exports = { saveService, getService, getServiceByPlateAndReservation, updateService, getAllServices, getEndedServices };
+module.exports = { saveService, getService ,getServiceByPlateAndReservation, updateService, getAllServices, getEndedServices };
