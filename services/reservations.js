@@ -1,4 +1,5 @@
 const reservationsDB = require('../data/reservations');
+var moment = require('moment');
 
 const startReservation = async (reservationId) => {
     try {
@@ -30,7 +31,7 @@ const cancelReservation = async (reservationId) => {
 const checkActiveReservation = async (email) => {
     try {
         const reservationsByUser = await reservationsDB.getAllReservationsByEmail(email);
-        const activeReservationsByUser = reservationsByUser.some(r => r.status === "ACTIVE");
+        const activeReservationsByUser = reservationsByUser.some(r => r.status === "ACTIVE" && moment(r.startTime).isSame(moment(), 'day'));
         return activeReservationsByUser
     } catch (error) {
         return false
