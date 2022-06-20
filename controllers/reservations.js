@@ -18,9 +18,11 @@ const getAllReservationsByUser = async (req, res) => {
     try {
         const { email } = req.user;
         const reservations = await reservationsDB.getAllReservationsByEmail(email);
-        const filteredReservations = reservations.filter((r) => moment().isSame(r.startTime, 'day') &&
-            r.bookingType == "MAINTENANCE" &&
-            (r.status == "RESERVED" || r.status == "ACTIVE"))
+        const filteredReservations = reservations
+            .filter((r) => moment().isSame(r.startTime, 'day') &&
+                r.bookingType == "MAINTENANCE" &&
+                (r.status == "RESERVED" || r.status == "ACTIVE"))
+            .sort((a, b) => moment(a.startTime).unix() - moment(b.startTime).unix())
 
         res.status(200).json(filteredReservations);
     } catch (error) {

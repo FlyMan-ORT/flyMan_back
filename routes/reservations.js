@@ -4,12 +4,12 @@ const fs = require('fs');
 const authorization = require('../middlewares/authorization');
 const reservationsController = require('../controllers/reservations');
 
-router.get('/', reservationsController.getAllReservations);
+router.get('/', authorization, reservationsController.getAllReservations);
 
 router.get('/app', authorization, reservationsController.getAllReservationsByUser);
 
-router.post('/', reservationsController.createReservation);
+router.post('/', authorization, reservationsController.createReservation);
 
-router.delete('/:id', reservationsController.deleteReservation);
+router.delete('/:id', authorization, reservationsController.deleteReservation);
 
 module.exports = router;
