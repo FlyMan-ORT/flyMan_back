@@ -13,6 +13,16 @@ async function saveService(service) {
     return result;
 }
 
+async function getService(id) {
+    const connectiondb = await conn.getConnection();
+    const result = await connectiondb
+        .db(DATABASE)
+        .collection(SERVICES_COLLECTION)
+        .findOne({ _id: new ObjectId(id) });
+
+    return result;
+}
+
 async function getAllServices() {
     const connectiondb = await conn.getConnection();
     const services = await connectiondb
@@ -33,16 +43,6 @@ async function getEndedServices() {
         .toArray();
 
     return services;
-}
-
-async function getService(id) {
-    const connectiondb = await conn.getConnection();
-    const service = await connectiondb
-        .db(DATABASE)
-        .collection(SERVICES_COLLECTION)
-        .findOne({ _id: new ObjectId(id) });
-
-    return service;
 }
 
 async function getServiceByPlateAndReservation(plate, reservationId) {
@@ -78,4 +78,4 @@ async function updateService(id, body, endDate) {
     return record;
 }
 
-module.exports = { saveService, getService, getServiceByPlateAndReservation, updateService, getAllServices, getEndedServices };
+module.exports = { saveService, getService ,getServiceByPlateAndReservation, updateService, getAllServices, getEndedServices };

@@ -1,35 +1,37 @@
 var moment = require('moment');
 const servicesDB = require('../data/services');
 const reservationsService = require('../services/reservations');
+const carsService = require('../services/cars');
 
 const createService = async (req, res) => {
     try {
-        const { plate, reservationId } = req.body;
-        if (!plate || !reservationId) return res.status(400).json({error: "No se pueden enviar campos vacíos."});
+        const { plate, reservationId, carImage } = req.body;
 
-        // Chequear si tiene una reserva activa
-        // Chequear si tiene un servicio no finalizado?
+        if (!plate || !reservationId || !carImage) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
 
         const serviceExistant = await servicesDB.getServiceByPlateAndReservation(plate, reservationId);
-        if (serviceExistant) return res.status(400).json({error: "Servicio ya iniciado."});
+        if (serviceExistant) return res.status(400).json({ error: "Servicio ya iniciado." });
 
         const { email } = req.user;
+        const activeReservation = await reservationsService.checkActiveReservation(email);;
+        if (activeReservation) return res.status(400).json({ error: "El usuario ya tiene una reserva activa."})
 
         const service = {
             plate: plate,
+            carImage: carImage,
             reservationId: reservationId,
             userEmail: email,
             startDate: moment.utc().format(),
         }
 
         const saved = await servicesDB.saveService(service);
-        if (!saved.insertedId) return res.status(500).json({error: "Ocurrió un error al iniciar el servicio. Inténtelo nuevamente."});
+        if (!saved.insertedId) return res.status(500).json({ error: "Ocurrió un error al iniciar el servicio. Inténtelo nuevamente." });
 
         await reservationsService.startReservation(reservationId);
 
         res.status(200).json({ serviceId: saved.insertedId });
     } catch (error) {
-        res.status(500).json({error: "Ocurrió un error al iniciar el servicio. Inténtelo nuevamente."});
+        res.status(500).json({ error: "Ocurrió un error al iniciar el servicio. Inténtelo nuevamente." });
     }
 }
 
@@ -45,21 +47,7 @@ const getAllServices = async (req, res) => {
 
         res.status(200).json(services);
     } catch (error) {
-        res.status(500).json({error: "Ocurrió un error al cargar los servicios. Inténtelo nuevamente."});
-    }
-}
-
-const getService = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) return res.status(400).json({error: "No se pueden enviar campos vacíos."});
-
-        const service = await servicesDB.getService(id);
-        if (!service) return res.status(404).json({error: "Servicio inexistente."});
-
-        res.status(200).json({ service });
-    } catch (error) {
-        res.status(500).json({error: "Ocurrió un error al cargar el servicio. Inténtelo nuevamente."});
+        res.status(500).json({ error: "Ocurrió un error al cargar los servicios. Inténtelo nuevamente." });
     }
 }
 
@@ -103,9 +91,11 @@ const updateService = async (req, res) => {
 
         await reservationsService.finishReservation(service.reservationId);
 
+        await carsService.updateLastServiceDate(service.plate, endDate);
+
         res.status(200).json({ updated: updated.modifiedCount > 0 });
     } catch (error) {
-        res.status(500).json({error: "Ocurrió un error al modificar el servicio. Inténtelo nuevamente."});
+        res.status(500).json({ error: "Ocurrió un error al modificar el servicio. Inténtelo nuevamente." });
     }
 }
 
@@ -144,4 +134,4 @@ const validateService = {
     }
 }
 
-module.exports = { createService, getService, getServiceByPlateAndReservation, updateService, getAllServices };
+module.exports = { createService, getServiceByPlateAndReservation, updateService, getAllServices };

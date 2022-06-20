@@ -3,20 +3,17 @@ const router = express.Router();
 const authorization = require('../middlewares/authorization');
 const usersController = require('../controllers/users');
 
-/* GET users listing. */
-router.get('/', usersController.getAllUsers);
+router.get('/', authorization, usersController.getAllUsers);
 
-//Users login (APP)
 router.post('/login', usersController.login);
 
-//Users register (WEB)
-router.post('/register', usersController.register);
+router.post('/web/login', usersController.webLogin);
 
-//Users update
-router.patch('/:id', usersController.updateUser);
+router.post('/register', authorization, usersController.register);
 
-//Users delete (en vez de borrarlo, le crea un nuevo aributo con la fecha de baja del usuario)
-router.delete('/:id', usersController.deleteUser);
+router.patch('/:id', authorization, usersController.updateUser);
+
+router.delete('/:id', authorization, usersController.deleteUser);
 
 router.post('/pin', authorization, usersController.checkPin);
 
