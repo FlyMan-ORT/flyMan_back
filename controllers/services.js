@@ -13,8 +13,8 @@ const createService = async (req, res) => {
         if (serviceExistant) return res.status(400).json({ error: "Servicio ya iniciado." });
 
         const { email } = req.user;
-        const activeReservation = await reservationsService.checkActiveReservation(email);;
-        if (activeReservation) return res.status(400).json({ error: "El usuario ya tiene una reserva activa."})
+        const activeReservation = await reservationsService.checkActiveReservation(email);
+        if (activeReservation) return res.status(400).json({ error: "El usuario ya tiene una reserva activa."});
 
         const service = {
             plate: plate,
@@ -87,7 +87,8 @@ const updateService = async (req, res) => {
         const endDate = moment.utc().format();
 
         const updated = await servicesDB.updateService(id, req.body, endDate);
-        if (!updated || updated.modifiedCount === 0) return res.status(500).json();
+
+        if (!updated) return res.status(500).json({ error: "Ocurrió un error al modificar el servicio. Inténtelo nuevamente." });
 
         await reservationsService.finishReservation(service.reservationId);
 

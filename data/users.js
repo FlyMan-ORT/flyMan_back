@@ -10,7 +10,6 @@ async function getAllUsers() {
         .collection(USERS_COLLECTION)
         .find()
         .toArray();
-//{deletedAt:{$nin:[null]}}
     return users.filter(item => !(item.hasOwnProperty("deletedAt")));
 }
 
