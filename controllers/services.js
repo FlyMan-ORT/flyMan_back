@@ -6,7 +6,6 @@ const carsService = require('../services/cars');
 const createService = async (req, res) => {
     try {
         const { plate, reservationId, carImage } = req.body;
-
         if (!plate || !reservationId || !carImage) return res.status(400).json({ error: "No se pueden enviar campos vacíos." });
 
         const serviceExistant = await servicesDB.getServiceByPlateAndReservation(plate, reservationId);
@@ -79,16 +78,19 @@ const updateService = async (req, res) => {
             || !validateService.documents(documents)
             || !validateService.cleanliness(cleanliness)
             || !validateService.fuel(fuel)
-        ) return res.status(400).json();
+        ) {
+            return res.status(400).json({error: "Ocurrió un error al modificar el servicio. Inténtelo nuevamente."});
+        } 
 
         const service = await servicesDB.getService(id);
-        if (!service) return res.status(404).json();
+        if (!service) return res.status(404).json({ error: "Ocurrió un error al modificar el servicio. Inténtelo nuevamente." });
 
         const endDate = moment.utc().format();
 
         const updated = await servicesDB.updateService(id, req.body, endDate);
 
         if (!updated) return res.status(500).json({ error: "Ocurrió un error al modificar el servicio. Inténtelo nuevamente." });
+
 
         await reservationsService.finishReservation(service.reservationId);
 
@@ -129,8 +131,8 @@ const validateService = {
         if (!fuel) return false;
         const { fuelLoad, fuelPrice } = fuel;
         if (fuelLoad === undefined || fuelLoad === null) return false;
-        if (fuelPrice === undefined || fuelPrice === null) return false;
-        if (typeof fuelPrice !== 'number') return false;
+        if (fuelPrice === undefined ) return false;
+        if (fuelPrice !== null && typeof fuelPrice !== 'number') return false;
         return true;
     }
 }
