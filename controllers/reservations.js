@@ -52,14 +52,14 @@ const createReservation = async (req, res) => {
         const userOcuppied = userReservations.some((r) => startTime.isSame(r.startTime, 'day')
             && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, undefined)
             && r.bookingType == "MAINTENANCE"
-            && (r.status == "RESERVED" || r.status == "ACTIVE" || r.status == "COMPLETE"))
+            && (r.status != "CANCELLED"))
 
         if (userOcuppied) return res.status(400).json({ error: "Este operario esta ocupado a esta hora." });
 
         const carReservations = await reservationsDB.getReservationsByPlate(plate);
         const isReserved = carReservations.some((r) => startTime.isSame(r.startTime, 'day')
             && dateUtils.isBetween(startTime, endTime, r.startTime, r.endTime, undefined)
-            && (r.status == "RESERVED" || r.status == "ACTIVE" || r.status == "COMPLETE"))
+            && (r.status != "CANCELLED"))
 
         if (isReserved) return res.status(400).json({ error: "Este auto ya tiene una reserva a esta hora." });
 
@@ -99,7 +99,7 @@ const deleteReservation = async (req, res) => {
 
         if (reservation.status == "ACTIVE") return res.status(400).json({ error: "No se puede cancelar una reserva activa." });
         if (reservation.status == "COMPLETE") return res.status(400).json({ error: "No se puede cancelar una reserva finalizada." });
-        if (reservation.status == "CANCELLED") return res.status(400).json({ error: "Esta reserva ya fue candelada anteriormente." });
+        if (reservation.status == "CANCELLED") return res.status(400).json({ error: "Esta reserva ya fue cancelada anteriormente." });
 
         const isPast = moment().isAfter(reservation.startTime);
         if (isPast) return res.status(400).json({ error: "No se puede eliminar una reserva pasada." });
